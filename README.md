@@ -9,19 +9,19 @@ La aplicación se puede publicar en **Netlify**, con una dirección .netlify.app
 - Supabase conectado y activo. Esquema y datos ficticios de las campañas 2025 y 2026 aplicados.
 - Inicio de sesión confirmado por el usuario. Acceso por correo y contraseña y opción de Google.
 - Resumen y consultas paginadas optimizados en PostgreSQL, con RLS.
-- Configuración de Netlify y CI preparada. **Repositorio remoto y despliegue aún pendientes de acceso y verificación.**
-- ExcelJS está declarado, pero su instalación y la compilación completa siguen pendientes por las restricciones del entorno. No se considera validada la descarga Excel todavía.
+- Código publicado en [Vixxha/Proyecto_integrado](https://github.com/Vixxha/Proyecto_integrado), rama main. La primera ejecución de GitHub Actions terminó correctamente. La publicación en Netlify sigue pendiente de verificar.
+- ExcelJS instalado y lockfile sincronizado. Las comprobaciones automáticas incluyen la exportación y lectura de vuelta de Excel.
 
 ## Ejecución local
 
 Requiere Node.js 24 y npm.
 
 ```powershell
-npm.cmd install
+npm.cmd ci
 npm.cmd run dev
 ```
 
-En otros sistemas usar npm en lugar de npm.cmd. La primera instalación debe actualizar package-lock.json con las dependencias nuevas; no usar npm ci hasta sincronizar el lockfile. Las contraseñas y claves secretas no se guardan en el repositorio.
+En otros sistemas usar npm en lugar de npm.cmd. Usar npm ci para instalar las versiones del lockfile. Las contraseñas y claves secretas no se guardan en el repositorio.
 
 ```powershell
 npm.cmd run build
@@ -112,9 +112,9 @@ npm.cmd run test:e2e
 
 Los tests de navegador usan sesiones y un backend RPC ficticios y aislados. No modifican las cuentas ni los datos remotos. GitHub Actions ejecuta comprobaciones, compilación y pruebas al subir cambios.
 
-Se comprobaron 109 reglas de datos y flujo, 14 pruebas unitarias de datos, operaciones, errores y reportes, y las pruebas SQL de totales, semanas, filtros, paginación y acceso. Después de eliminar la configuración dotenv, pasaron 22 pruebas de navegador en escritorio y móvil, incluidas sesión simulada, filtros, paginación, inscripción, asignación y entrega. Estas pruebas no incluyen la exportación Excel pendiente ni certifican el acceso real a Google OAuth desde el alojamiento final.
+La primera ejecución de GitHub Actions completó 109 reglas de datos y flujo, 15 pruebas unitarias y 24 pruebas de navegador en escritorio y móvil, incluidas sesión simulada, filtros, paginación, inscripción, asignación, entrega y exportación Excel. Las pruebas SQL cubren totales, semanas, filtros, paginación y acceso. Estos resultados no certifican el acceso real a Google OAuth desde el alojamiento final.
 
-La descarga y la prueba de lectura de vuelta de Excel siguen pendientes de instalar ExcelJS. La red del entorno bloqueó npm con EACCES. El lockfile debe actualizarse con una instalación completa. Ver [pasos de publicación](docs/DEPLOYMENT.md).
+La exportación Excel y su lectura de vuelta están incluidas en las pruebas unitarias; la descarga también se prueba en navegador. Ver [pasos de publicación](docs/DEPLOYMENT.md).
 
 ## Publicar sin chatgpt.site
 

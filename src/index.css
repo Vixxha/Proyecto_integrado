@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 @theme inline {
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
@@ -55,8 +54,6 @@
 .nav-item.active { background: #eaf2f4; color: var(--color-primary); font-weight: 600; }
 .nav-item.active:hover { background: #deedef; }
 .nav-active-dot { margin-left: auto; width: 5px; height: 5px; border-radius: 100%; background: var(--color-primary); }
-.nav-item.upcoming { color: #8c97a0; }
-.nav-item.upcoming>span { margin-left: auto; font-size: 8px; border: 1px solid #edf0f2; padding: 2px 4px; border-radius: 4px; }
 .sidebar-bottom { margin-top: auto; padding-top: 36px; }
 .christmas-note { margin: 0 19px 15px; padding: 18px 15px 58px; position: relative; overflow: hidden; background: #f1f6f5; border: 1px solid #e9f0ee; border-radius: 9px; color: #3d6c69; }
 .christmas-note>svg { margin-bottom: 10px; }
@@ -229,7 +226,6 @@ h1>span { color: #478791; }
   .brand-symbol { width: 31px; height: 37px; }
   .program-name { margin-left: 15px; gap: 8px; font-size: 10px; }
   .nav-item { font-size: 10px; gap: 8px; padding-left: 8px; }
-  .nav-item.upcoming>span { font-size: 7px; }
   .christmas-note { margin-left: 14px; margin-right: 14px; padding-left: 12px; }
   .sidebar-footer { padding-left: 11px; padding-right: 8px; font-size: 8px; }
   .sidebar-footer small { font-size: 6px; }

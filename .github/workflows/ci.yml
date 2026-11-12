@@ -22,7 +22,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
       - name: Verify data and workflows
         run: npm run test:data
       - name: Unit tests
