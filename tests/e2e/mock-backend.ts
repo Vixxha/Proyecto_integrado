@@ -3,13 +3,13 @@ import { CAMPAIGNS, DEMO_DATA, SECTORS, summarize, type Campaign, type Registrat
 import { assignGift, deliverGift, registerChild, uniqueRegistrations } from '../../src/lib/operations'
 
 // Browser tests use fake sessions and an isolated RPC backend. No real credentials or writes.
-export async function mockBackend(page: Page) {
+export async function mockBackend(page: Page, authenticated = true) {
   let source: SystemData = { registrations: uniqueRegistrations(DEMO_DATA), gifts: [...DEMO_DATA.gifts] }
   const calls: { path: string; body: Record<string, unknown> }[] = []
   const user = { id:'00000000-0000-4000-8000-000000000123',email:'browser-test@example.invalid',aud:'authenticated',role:'authenticated',created_at:'2026-01-01T00:00:00Z',app_metadata:{provider:'email',providers:['email']},user_metadata:{} }
   const expires = Math.floor(Date.now()/1000)+3600
   const access = [Buffer.from(JSON.stringify({alg:'HS256',typ:'JWT'})).toString('base64url'),Buffer.from(JSON.stringify({sub:user.id,role:'authenticated',aud:'authenticated',exp:expires})).toString('base64url'),'FAKE-TEST-SIGNATURE'].join('.')
-  await page.addInitScript(({user,access,expires}) => {
+  if (authenticated) await page.addInitScript(({user,access,expires}) => {
     localStorage.setItem('sb-ovnvoodmxuygkxgczeka-auth-token',JSON.stringify({access_token:access,refresh_token:'FAKE-TEST-REFRESH',expires_at:expires,expires_in:3600,token_type:'bearer',user}))
   }, {user,access,expires})
   await page.route('https://ovnvoodmxuygkxgczeka.supabase.co/**',async route => {
@@ -43,5 +43,5 @@ export async function mockBackend(page: Page) {
       await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(data)})
     } catch (error) { await route.fulfill({status:400,contentType:'application/json',body:JSON.stringify({code:'P0001',message:error instanceof Error?error.message:'Mock error'})}) }
   })
-  return {calls}
+  return {calls, session: { access_token: access, refresh_token: 'FAKE-TEST-REFRESH', expires_at: expires, expires_in: 3600, token_type: 'bearer', user }}
 }

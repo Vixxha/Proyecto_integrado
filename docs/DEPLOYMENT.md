@@ -33,6 +33,14 @@ La URL y la clave publishable son públicas. Los permisos se aplican mediante Su
 
 Para usar Google OAuth, registrar la dirección HTTPS final en Supabase, Authentication > URL Configuration. Probar el inicio de sesión, filtros, inscripción, asignación, entrega y descarga Excel desde el alojamiento final.
 
+El acceso con Google usa PKCE. La aplicación intercambia el código una sola vez antes de cargar los datos, elimina los parámetros de autenticación de la dirección y muestra un mensaje para reintentar si el retorno falla. También admite los retornos con tokens emitidos por la versión anterior.
+
+Autorizar el origen exacto del frontend en Redirect URLs: localhost y 127.0.0.1 son distintos, al igual que sus puertos. Configurar Site URL con el dominio final. En Google Cloud, la URI de retorno del proveedor es https://ovnvoodmxuygkxgczeka.supabase.co/auth/v1/callback. El secreto OAuth se configura en Supabase, nunca en el navegador.
+
+Iniciar y completar el acceso desde el mismo navegador y origen. Si falta el verificador o el código venció, iniciar de nuevo con Continuar con Google. No compartir enlaces que contengan tokens.
+
+Para probar la compilación local, ejecutar npm run build y definir PLAYWRIGHT_PREVIEW=1 al ejecutar npm run test:e2e. Las pruebas simulan Google y no certifican el inicio real desde el dominio publicado.
+
 La clave de Google Maps es opcional. Sin ella se utiliza el mapa ilustrativo. Para un dominio propio, seguir los registros DNS y la activación HTTPS indicados por Netlify.
 
 ## Verificación

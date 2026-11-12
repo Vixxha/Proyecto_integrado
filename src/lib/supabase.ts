@@ -15,7 +15,9 @@ function validateConfiguration() {
   return null
 }
 export const configurationError = validateConfiguration()
-export const supabase = publicConfig.mode === 'supabase' && !configurationError ? createClient(url, key) : null
+export const supabase = publicConfig.mode === 'supabase' && !configurationError ? createClient(url, key, {
+  auth: { flowType: 'pkce', detectSessionInUrl: false, persistSession: true, autoRefreshToken: true },
+}) : null
 
 export async function loadRemoteDashboard(): Promise<RemoteReports> {
   if (!supabase) throw new Error('Supabase is not configured.')

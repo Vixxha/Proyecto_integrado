@@ -5,6 +5,8 @@ import { DEMO_DATA, type Campaign, type Registration, type SystemData } from './
 import { assignGift, deliverGift, registerChild } from './operations'
 import { configurationError, loadRemoteDashboard, remoteAssign, remoteDeliver, remoteRegister, supabase } from './supabase'
 import type { RemoteReports } from './reports'
+import { completeAuthRedirect } from './auth-redirect'
+import { loginErrorMessage } from './auth-errors'
 
 const STORAGE_KEY = 'la-florida-navidad-demo-v1'
 interface Delta { registrations: Registration[]; gifts: SystemData['gifts'] }
@@ -51,7 +53,7 @@ export function SystemProvider({ children }: { children: ReactNode }) {
     if (!quiet) setLoading(true)
     try {
       const { data: auth, error: authError } = await supabase.auth.getSession()
-      if (authError) throw authError
+      if (authError) throw new Error(loginErrorMessage(authError))
       if (version !== loadVersion.current) return
       if (!auth.session) { current.current = EMPTY; setSource(EMPTY); return }
       const { data: member, error: memberError } = await supabase.from('navidad_staff').select('role').eq('user_id', auth.session.user.id).maybeSingle()
@@ -71,13 +73,19 @@ export function SystemProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!supabase) return
     let active = true
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, next) => {
+    let unsubscribe: (() => void) | undefined
+    void completeAuthRedirect(supabase).then(callbackError => {
       if (!active) return
-      setSession(next)
-      if (!next) { ++loadVersion.current; current.current = EMPTY; setSource(EMPTY); setReports(null); setRole(null); setLoading(false) }
-      else window.setTimeout(() => { if (active) void refresh() }, 0)
+      if (callbackError) setError(callbackError)
+      const { data: { subscription } } = supabase!.auth.onAuthStateChange((_event, next) => {
+        if (!active) return
+        setSession(next)
+        if (!next) { ++loadVersion.current; current.current = EMPTY; setSource(EMPTY); setReports(null); setRole(null); setLoading(false) }
+        else window.setTimeout(() => { if (active) void refresh() }, 0)
+      })
+      unsubscribe = () => subscription.unsubscribe()
     })
-    return () => { active = false; ++loadVersion.current; subscription.unsubscribe() }
+    return () => { active = false; ++loadVersion.current; unsubscribe?.() }
   }, [refresh])
 
   async function mutate(next: () => SystemData, remote: () => Promise<void>, update: (data: SystemData) => Delta) {
