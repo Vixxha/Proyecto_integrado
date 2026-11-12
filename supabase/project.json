@@ -1,0 +1,11 @@
+{
+  "project_ref": "ovnvoodmxuygkxgczeka",
+  "project_name": "Municipalidad-jugetes",
+  "mcp_connected": true,
+  "restore_requested": true,
+  "status": "ACTIVE_HEALTHY",
+  "schema_applied": true,
+  "seed_applied": true,
+  "access_checks_passed": true,
+  "operator_account_pending": false
+}
